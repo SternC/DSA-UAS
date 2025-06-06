@@ -76,10 +76,11 @@ void deleteMinHeap2(char arr[][2][101], int *counter, int i)
 {
     if (*counter <= 0 || i >= *counter)
     {
-        swap2(arr, i, *counter - 1);
-        (*counter)--;
-        minHeapify2(arr, *counter, i);
+        return;
     }
+    swap2(arr, i, *counter - 1);
+    (*counter)--;
+    minHeapify2(arr, *counter, i);
 }
 
 void swap3(char arr[][3][101], int i, int j)
@@ -142,6 +143,18 @@ void printHeap3(char arr[][3][101], int counter)
     {
         printf("%s#%s\n", arr[i][0], arr[i][2]);
     }
+}
+
+void deleteMinHeap3(char arr[][3][101], int *counter, int i)
+{
+    if (*counter <= 0 || i >= *counter)
+    {
+        return;
+    }
+
+    swap3(arr, i, *counter - 1);
+    (*counter)--;
+    minHeapify3(arr, *counter, i);
 }
 
 void addCinemaLocationAndNewProvince(int counterProv)
@@ -208,7 +221,7 @@ void deleteCinemaLocation(int *counterLoc, char provinceAndCode[100][2][101], ch
 {
     char provinceCode[101], cinemaNum[101];
     char filteredCinema[100][3][101];
-    int counter, counterShift;
+    int counter;
 
     FILE *cinProvFile = fopen("cinema_province.txt", "r");
     FILE *cinLocFile = fopen("cinema_location.txt", "w");
@@ -246,16 +259,7 @@ void deleteCinemaLocation(int *counterLoc, char provinceAndCode[100][2][101], ch
         counter++;
     }
 
-    (*counterLoc)--;
-    counterShift = *counterLoc - counter;
-
-    for (int i = 0; i < counterShift; i++)
-    {
-        strcpy(locationAndCodeAndNum[counter][0], locationAndCodeAndNum[counter + 1][0]);
-        strcpy(locationAndCodeAndNum[counter][1], locationAndCodeAndNum[counter + 1][1]);
-        strcpy(locationAndCodeAndNum[counter][2], locationAndCodeAndNum[counter + 1][2]);
-        counter++;
-    }
+    deleteMinHeap3(locationAndCodeAndNum, counterLoc, counter);
 
     counter = 0;
     for (int i = 0; i < *counterLoc; i++)
@@ -266,6 +270,81 @@ void deleteCinemaLocation(int *counterLoc, char provinceAndCode[100][2][101], ch
 
     fclose(cinProvFile);
     fclose(cinLocFile);
+}
+
+void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char provinceAndCode[100][2][101], char locationAndCodeAndNum[100][3][101])
+{
+    char provinceCode[101];
+    int counter, counterCode;
+
+    FILE *cinProvFile = fopen("cinema_province.txt", "w");
+    FILE *cinLocFile = fopen("cinema_location.txt", "w");
+
+    printf("\nPlease Input The Code!\n");
+    printf("Choose Province's Code: ");
+    scanf("%s", provinceCode);
+    printf("\n");
+
+    counter = 0;
+    while (strcmp(provinceAndCode[counter][1], provinceCode) != 0)
+    {
+        counter++;
+    }
+
+    deleteMinHeap2(provinceAndCode, counterProv, counter);
+
+    for (int i = 0; i < *counterProv; i++)
+    {
+        fprintf(cinProvFile, "%s#%s\n", provinceAndCode[i][0], provinceAndCode[i][1]);
+    }
+
+    fclose(cinProvFile);
+
+    counter = 0;
+    counterCode = 0;
+    while (1)
+    {
+        if (strcmp(locationAndCodeAndNum[counter][1], provinceCode) == 0)
+        {
+            counterCode++;
+        }
+        counter++;
+        if (strcmp(locationAndCodeAndNum[counter][1], "") == 0)
+        {
+            break;
+        }
+    }
+
+    for (int i = 0; i < counterCode; i++)
+    {
+        counter = 0;
+        while (strcmp(locationAndCodeAndNum[counter][1], provinceCode) != 0)
+        {
+            counter++;
+        }
+
+        deleteMinHeap3(locationAndCodeAndNum, counterLoc, counter);
+    }
+
+    for (int i = 0; i < *counterLoc; i++)
+    {
+        fprintf(cinLocFile, "%s#%s#%s\n", locationAndCodeAndNum[i][0], locationAndCodeAndNum[i][1], locationAndCodeAndNum[i][2]);
+    }
+
+    fclose(cinLocFile);
+}
+
+void deleteAllLocationAndProvince(int *counterProv, int *counterLoc, char provinceAndCode[][2][101], char locationAndCodeAndNum[][3][101])
+{
+    while (*counterProv > 0)
+    {
+        deleteMinHeap2(provinceAndCode, counterProv, 0);
+    }
+
+    while (*counterLoc > 0)
+    {
+        deleteMinHeap3(locationAndCodeAndNum, counterLoc, 0);
+    }
 }
 
 void owner()
@@ -326,21 +405,106 @@ void owner()
             break;
 
         case 4:
-
-            // deleteCinemaProvinceAndLocation();
+            heapSort2(provinceAndCode, counterProv);
+            printHeap2(provinceAndCode, counterProv);
+            deleteCinemaProvinceAndLocation(&counterLoc, &counterProv, provinceAndCode, locationAndCodeAndNum);
             break;
 
         default:
-            // deleteAllLocationAndProvince();
+            deleteAllLocationAndProvince(&counterProv, &counterLoc, provinceAndCode, locationAndCodeAndNum);
             return;
         }
-        // deleteAllLocationAndProvince();
+        deleteAllLocationAndProvince(&counterProv, &counterLoc, provinceAndCode, locationAndCodeAndNum);
     }
+}
+
+void chooseCinema()
+{
+    char userProv[101], userCinema[101];
+    int counterProv, counterLoc, counter;
+
+    char provinceAndCode[100][2][101];
+    char locationAndCodeAndNum[100][3][101];
+
+    counterLoc = counterProv = 0;
+
+    FILE *cinProvFile = fopen("cinema_province.txt", "r");
+    FILE *cinLocFile = fopen("cinema_location.txt", "r");
+
+    while (!feof(cinProvFile))
+    {
+        fscanf(cinProvFile, " %[^#]#%[^\n]\n", provinceAndCode[counterProv][0], provinceAndCode[counterProv][1]);
+        counterProv++;
+    }
+
+    while (!feof(cinLocFile))
+    {
+        fscanf(cinLocFile, " %[^#]#%[^#]#%[^\n]\n", locationAndCodeAndNum[counterLoc][0], locationAndCodeAndNum[counterLoc][1], locationAndCodeAndNum[counterLoc][2]);
+        counterLoc++;
+    }
+
+    fclose(cinProvFile);
+    fclose(cinLocFile);
+
+    heapSort2(provinceAndCode, counterProv);
+
+    printf("Choose Your Province: ");
+    scanf("%s", userProv);
+    printf("\n");
+
+    heapSort3(locationAndCodeAndNum, counterLoc);
+
+    printf("Choose Your Cinema: ");
+    scanf("%s", userCinema);
+    printf("\n");
 }
 
 int main()
 {
-    owner();
+    int login, attempt = 0;
+    char correctUsername[] = {"admin"}, inputtedUsername[50];
+    char correctPassword[] = {"admin"}, inputtedPassword[50];
+    char provinceAndCode[100][2][101];
+    char locationAndCodeAndNum[100][3][101];
 
+    printf("1. Customer\n");
+    printf("2. Owner\n");
+    printf("Choose Your Mode: ");
+    scanf("%d", &login);
+    printf("\n");
+
+    if (login == 1)
+    {
+        chooseCinema();
+    }
+    else if (login == 2)
+    {
+        while (attempt < 3)
+        {
+            printf("Username: ");
+            scanf(" %[^\n]", inputtedUsername);
+            printf("Password: ");
+            scanf(" %[^\n]", inputtedPassword);
+            if (strcmp(correctUsername, inputtedUsername) == 0 && strcmp(correctPassword, inputtedPassword) == 0)
+            {
+                printf("\n");
+                break;
+            }
+            attempt++;
+            if (attempt < 3)
+            {
+                printf("\nUsername or Password Incorrect (Remaining Attempt: %d)\n\n", 3 - attempt);
+            }
+            else
+            {
+                printf("\nTry Again Next Time");
+            }
+        }
+
+        if (attempt != 3)
+        {
+            owner();
+        }
+    }
     return 0;
 }
