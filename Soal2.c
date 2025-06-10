@@ -456,7 +456,7 @@ void chooseCinema()
     printHeap2(provinceAndCode, counterProv);
 
     printf("Choose Your Province: ");
-    scanf("%s", userProv);
+    scanf(" %[^\n]", userProv);
     printf("\n");
 
     counter = 0;
@@ -477,7 +477,7 @@ void chooseCinema()
     printHeap3(filteredCinema, counter);
 
     printf("Choose Your Cinema: ");
-    scanf("%s", userCinema);
+    scanf(" %[^\n]", userCinema);
     printf("\n");
 }
 
