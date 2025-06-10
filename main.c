@@ -607,6 +607,7 @@ void deleteCinemaLocation(int *counterLoc, char provinceAndCode[100][2][101], ch
     deleteMinHeap3(locationAndCodeAndNum, counterLoc, counter);
 
     counter = 1;
+    (*counterLoc)++;
     for (int i = 1; i < *counterLoc; i++)
     {
         fprintf(cinLocFile, "%s#%s#%s\n", locationAndCodeAndNum[counter][0], locationAndCodeAndNum[counter][1], locationAndCodeAndNum[counter][2]);
@@ -628,7 +629,7 @@ void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char pro
 
     counter = 1;
 
-    for (int i = 1; i < *counterProv; i++)
+    for (int i = 1; i <= *counterProv; i++)
     {
         for (int j = 0; j < 2; j++)
         {
@@ -652,7 +653,7 @@ void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char pro
         counter++;
     }
 
-    deleteMinHeap2(provinceAndCode, counterProv, counter);
+    deleteMinHeap2(provinceAndCode, counterProv, counter - 1);
 
     for (int i = 1; i < *counterProv; i++)
     {
@@ -806,8 +807,6 @@ void cinemaOwner()
             break;
 
         case 4:
-            heapSort2(provinceAndCode, counterProv);
-            printHeap2(provinceAndCode, counterProv);
             deleteCinemaProvinceAndLocation(&counterLoc, &counterProv, provinceAndCode, locationAndCodeAndNum);
             break;
 
@@ -822,23 +821,22 @@ void cinemaOwner()
 void chooseCinema(char chosenProv[], char chosenCinema[])
 {
     char userProv[101], userCinema[101];
-    int counterProv = 1, counterLoc = 1;
+    int counterProv = 1, counterLoc = 1, filteredCount = 1;
 
     char provinceAndCode[100][2][101];
     char locationAndCodeAndNum[100][3][101];
+    char filteredCinema[100][3][101];
 
     FILE *cinProvFile = fopen("cinema_province.txt", "r");
     FILE *cinLocFile = fopen("cinema_location.txt", "r");
 
-    while (!feof(cinProvFile))
+    while (fscanf(cinProvFile, " %[^#]#%[^\n]\n", provinceAndCode[counterProv][0], provinceAndCode[counterProv][1]) == 2)
     {
-        fscanf(cinProvFile, " %[^#]#%[^\n]\n", provinceAndCode[counterProv][0], provinceAndCode[counterProv][1]);
         counterProv++;
     }
 
-    while (!feof(cinLocFile))
+    while (fscanf(cinLocFile, " %[^#]#%[^#]#%[^\n]\n", locationAndCodeAndNum[counterLoc][0], locationAndCodeAndNum[counterLoc][1], locationAndCodeAndNum[counterLoc][2]) == 3)
     {
-        fscanf(cinLocFile, " %[^#]#%[^#]#%[^\n]\n", locationAndCodeAndNum[counterLoc][0], locationAndCodeAndNum[counterLoc][1], locationAndCodeAndNum[counterLoc][2]);
         counterLoc++;
     }
 
@@ -853,39 +851,53 @@ void chooseCinema(char chosenProv[], char chosenCinema[])
     scanf(" %[^\n]", userProv);
 
     int provIndex = binarySearchProvince(userProv, provinceAndCode, counterProv);
-    if (provIndex != -1)
-    {
-        strcpy(chosenProv, provinceAndCode[provIndex][0]);
-        printf("Selected Province: %s\n", chosenProv);
-    }
-    else
+    if (provIndex == -1)
     {
         printf("Province not found!\n");
         return;
     }
 
-    printf("\n");
-    heapSort3(locationAndCodeAndNum, counterLoc - 1);
-    printHeap4(locationAndCodeAndNum, counterLoc - 1, provinceAndCode[provIndex][1]);
+    strcpy(chosenProv, provinceAndCode[provIndex][0]);
+    char *selectedProvCode = provinceAndCode[provIndex][1];
+    printf("Selected Province: %s\n\n", chosenProv);
 
-    printf("\n");
+    for (int i = 1; i < counterLoc; i++)
+    {
+        if (strcmp(locationAndCodeAndNum[i][1], selectedProvCode) == 0)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                strcpy(filteredCinema[filteredCount][j], locationAndCodeAndNum[i][j]);
+            }
+            filteredCount++;
+        }
+    }
 
-    printf("Choose Your Cinema [CASE SENSITIVE]: ");
+    heapSort3(filteredCinema, filteredCount - 1);
+    printHeap3(filteredCinema, filteredCount - 1);
+
+    printf("\nChoose Your Cinema [CASE SENSITIVE]: ");
     scanf(" %[^\n]", userCinema);
 
-    int cinemaIndex = binarySearchCinema(userCinema, locationAndCodeAndNum, counterLoc);
-    if (cinemaIndex != -1)
+    int found = 0;
+    for (int i = 1; i < filteredCount; i++)
     {
-        strcpy(chosenCinema, locationAndCodeAndNum[cinemaIndex][0]);
-        printf("Selected Cinema: %s\n", chosenCinema);
+        if (strcmp(filteredCinema[i][0], userCinema) == 0)
+        {
+            strcpy(chosenCinema, filteredCinema[i][0]);
+            found = 1;
+            break;
+        }
+    }
+
+    if (found)
+    {
+        printf("Selected Cinema: %s\n\n", chosenCinema);
     }
     else
     {
-        printf("Cinema not found!\n");
-        return;
+        printf("Cinema not found!\n\n");
     }
-
-    printf("\n");
 }
 
 // FOOD AREA (SOAL NOMOR 3)
