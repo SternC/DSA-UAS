@@ -448,12 +448,17 @@ void minHeapify3(char arr[][3][101], int counter, int i)
     }
 }
 
-void heapSort3(char arr[][3][101], int counter)
+void minHeap3(char arr[][3][101], int counter)
 {
     for (int i = counter / 2 - 1; i >= 0; i--)
     {
         minHeapify3(arr, counter, i);
     }
+}
+
+void heapSort3(char arr[][3][101], int counter)
+{
+    minHeap3(arr, counter);
 
     for (int i = counter - 1; i > 0; i--)
     {
@@ -1123,20 +1128,25 @@ void foodMenu()
         printf("Choose your option: ");
         scanf(" %d", &menuChoice);
 
-        if (menuChoice == 1){
+        if (menuChoice == 1)
+        {
             foodPrint(snack);
         }
-        else if (menuChoice == 2){
+        else if (menuChoice == 2)
+        {
             insertionSort(snack);
         }
-        else if (menuChoice == 3){
+        else if (menuChoice == 3)
+        {
             selectionSort(snack);
         }
-        else if (menuChoice == 4){
+        else if (menuChoice == 4)
+        {
             printf("Exiting Food Menu.\n");
             break;
         }
-        else{
+        else
+        {
             printf("Invalid choice. Please try again.\n");
         }
     }

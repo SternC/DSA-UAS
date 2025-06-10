@@ -118,12 +118,17 @@ void minHeapify3(char arr[][3][101], int counter, int i)
     }
 }
 
-void heapSort3(char arr[][3][101], int counter)
+void minHeap3(char arr[][3][101], int counter)
 {
     for (int i = counter / 2 - 1; i >= 0; i--)
     {
         minHeapify3(arr, counter, i);
     }
+}
+
+void heapSort3(char arr[][3][101], int counter)
+{
+    minHeap3(arr, counter);
 
     for (int i = counter - 1; i > 0; i--)
     {
