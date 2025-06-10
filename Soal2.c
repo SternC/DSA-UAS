@@ -311,7 +311,7 @@ void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char pro
         counter++;
     }
 
-    deleteMinHeap2(provinceAndCode, counterProv, counter);
+    deleteMinHeap2(provinceAndCode, counterProv, counter - 1);
 
     for (int i = 1; i < *counterProv; i++)
     {
