@@ -480,6 +480,18 @@ void printHeap3(char arr[][3][101], int counter)
     }
 }
 
+void printHeap4(char arr[][3][101], int counter, char selectedProvinceCode[])
+{
+    for (int i = 0; i < counter; i++)
+    {
+        if (strcmp(arr[i][1], selectedProvinceCode) == 0)
+        {
+            printf("%s#%s\n", arr[i][0], arr[i][2]);
+        }
+    }
+}
+
+
 void deleteMinHeap3(char arr[][3][101], int *counter, int i)
 {
     if (*counter <= 0 || i >= *counter)
@@ -837,7 +849,8 @@ void chooseCinema(char chosenProv[], char chosenCinema[])
 
     printf("\n");
     heapSort3(locationAndCodeAndNum, counterLoc);
-    printHeap3(locationAndCodeAndNum, counterLoc);
+    printHeap4(locationAndCodeAndNum, counterLoc, provinceAndCode[provIndex][1]);
+
     printf("\n");
 
     printf("Choose Your Cinema [CASE SENSITIVE]: ");
