@@ -280,10 +280,26 @@ void deleteCinemaLocation(int *counterLoc, char provinceAndCode[100][2][101], ch
 void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char provinceAndCode[100][2][101], char locationAndCodeAndNum[100][3][101])
 {
     char provinceCode[101];
+    char provinceDisplay[100][2][101];
     int counter, counterCode;
 
     FILE *cinProvFile = fopen("cinema_province.txt", "w");
     FILE *cinLocFile = fopen("cinema_location.txt", "w");
+
+    counter = 0;
+
+    for (int i = 0; i < *counterProv; i++)
+    {
+        for (int j = 0; j < 2; j++)
+        {
+            strcpy(provinceDisplay[counter][j], provinceAndCode[i][j]);
+        }
+
+        counter++;
+    }
+
+    heapSort2(provinceDisplay, counter);
+    printHeap2(provinceDisplay, counter);
 
     printf("\nPlease Input The Code!\n");
     printf("Choose Province's Code: ");
@@ -410,8 +426,6 @@ void owner()
             break;
 
         case 4:
-            heapSort2(provinceAndCode, counterProv);
-            printHeap2(provinceAndCode, counterProv);
             deleteCinemaProvinceAndLocation(&counterLoc, &counterProv, provinceAndCode, locationAndCodeAndNum);
             break;
 
@@ -426,7 +440,6 @@ void owner()
 void chooseCinema()
 {
     char userProv[101], userCinema[101];
-    char filteredCinema[100][3][101];
     int counterProv, counterLoc, counter;
 
     char provinceAndCode[100][2][101];
@@ -453,31 +466,15 @@ void chooseCinema()
     fclose(cinLocFile);
 
     heapSort2(provinceAndCode, counterProv);
-    printHeap2(provinceAndCode, counterProv);
 
     printf("Choose Your Province: ");
-    scanf(" %[^\n]", userProv);
+    scanf(" [^/n]", userProv);
     printf("\n");
 
-    counter = 0;
-    for (int i = 0; i < counterLoc; i++)
-    {
-        if (strcmp(locationAndCodeAndNum[i][1], userProv) == 0)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                strcpy(filteredCinema[counter][j], locationAndCodeAndNum[i][j]);
-            }
-
-            counter++;
-        }
-    }
-
-    heapSort3(filteredCinema, counter);
-    printHeap3(filteredCinema, counter);
+    heapSort3(locationAndCodeAndNum, counterLoc);
 
     printf("Choose Your Cinema: ");
-    scanf(" %[^\n]", userCinema);
+    scanf(" [^/n]", userCinema);
     printf("\n");
 }
 
