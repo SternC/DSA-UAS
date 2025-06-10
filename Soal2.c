@@ -426,6 +426,7 @@ void owner()
 void chooseCinema()
 {
     char userProv[101], userCinema[101];
+    char filteredCinema[100][3][101];
     int counterProv, counterLoc, counter;
 
     char provinceAndCode[100][2][101];
@@ -452,12 +453,28 @@ void chooseCinema()
     fclose(cinLocFile);
 
     heapSort2(provinceAndCode, counterProv);
+    printHeap2(provinceAndCode, counterProv);
 
     printf("Choose Your Province: ");
     scanf("%s", userProv);
     printf("\n");
 
-    heapSort3(locationAndCodeAndNum, counterLoc);
+    counter = 0;
+    for (int i = 0; i < counterLoc; i++)
+    {
+        if (strcmp(locationAndCodeAndNum[i][1], userProv) == 0)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                strcpy(filteredCinema[counter][j], locationAndCodeAndNum[i][j]);
+            }
+
+            counter++;
+        }
+    }
+
+    heapSort3(filteredCinema, counter);
+    printHeap3(filteredCinema, counter);
 
     printf("Choose Your Cinema: ");
     scanf("%s", userCinema);
