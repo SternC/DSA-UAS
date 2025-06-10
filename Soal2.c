@@ -20,15 +20,15 @@ int compare2(char arr[][2][101], int i, int j)
 void minHeapify2(char arr[][2][101], int counter, int i)
 {
     int smallest = i;
-    int left = 2 * i + 1;
-    int right = 2 * i + 2;
+    int left = 2 * i;
+    int right = 2 * i + 1;
 
-    if (left < counter && compare2(arr, left, smallest) < 0)
+    if (left <= counter && compare2(arr, left, smallest) < 0)
     {
         smallest = left;
     }
 
-    if (right < counter && compare2(arr, right, smallest) < 0)
+    if (right <= counter && compare2(arr, right, smallest) < 0)
     {
         smallest = right;
     }
@@ -42,7 +42,7 @@ void minHeapify2(char arr[][2][101], int counter, int i)
 
 void minHeap2(char arr[][2][101], int counter)
 {
-    for (int i = counter / 2 - 1; i >= 0; i--)
+    for (int i = counter / 2; i >= 1; i--)
     {
         minHeapify2(arr, counter, i);
     }
@@ -52,21 +52,21 @@ void heapSort2(char arr[][2][101], int counter)
 {
     minHeap2(arr, counter);
 
-    for (int i = counter - 1; i > 0; i--)
+    for (int i = counter; i > 1; i--)
     {
-        swap2(arr, 0, i);
-        minHeapify2(arr, i, 0);
+        swap2(arr, 1, i);
+        minHeapify2(arr, i - 1, 1);
     }
 
-    for (int i = 0; i < counter / 2; i++)
+    for (int i = 1; i < counter / 2; i++)
     {
-        swap2(arr, i, counter - 1 - i);
+        swap2(arr, i, counter - i + 1);
     }
 }
 
 void printHeap2(char arr[][2][101], int counter)
 {
-    for (int i = 0; i < counter; i++)
+    for (int i = 1; i < counter; i++)
     {
         printf("%s#%s\n", arr[i][0], arr[i][1]);
     }
@@ -74,11 +74,11 @@ void printHeap2(char arr[][2][101], int counter)
 
 void deleteMinHeap2(char arr[][2][101], int *counter, int i)
 {
-    if (*counter <= 0 || i >= *counter)
+    if (*counter < 1 || i > *counter)
     {
         return;
     }
-    swap2(arr, i, *counter - 1);
+    swap2(arr, i, *counter);
     (*counter)--;
     minHeapify2(arr, *counter, i);
 }
@@ -102,13 +102,13 @@ int compare3(char arr[][3][101], int i, int j)
 void minHeapify3(char arr[][3][101], int counter, int i)
 {
     int smallest = i;
-    int left = 2 * i + 1;
-    int right = 2 * i + 2;
+    int left = 2 * i;
+    int right = 2 * i + 1;
 
-    if (left < counter && compare3(arr, left, smallest) < 0)
+    if (left <= counter && compare3(arr, left, smallest) < 0)
         smallest = left;
 
-    if (right < counter && compare3(arr, right, smallest) < 0)
+    if (right <= counter && compare3(arr, right, smallest) < 0)
         smallest = right;
 
     if (smallest != i)
@@ -120,7 +120,7 @@ void minHeapify3(char arr[][3][101], int counter, int i)
 
 void minHeap3(char arr[][3][101], int counter)
 {
-    for (int i = counter / 2 - 1; i >= 0; i--)
+    for (int i = counter / 2; i >= 1; i--)
     {
         minHeapify3(arr, counter, i);
     }
@@ -130,21 +130,21 @@ void heapSort3(char arr[][3][101], int counter)
 {
     minHeap3(arr, counter);
 
-    for (int i = counter - 1; i > 0; i--)
+    for (int i = counter; i > 1; i--)
     {
-        swap3(arr, 0, i);
-        minHeapify3(arr, i, 0);
+        swap3(arr, 1, i);
+        minHeapify3(arr, i - 1, 1);
     }
 
-    for (int i = 0; i < counter / 2; i++)
+    for (int i = 1; i < counter / 2; i++)
     {
-        swap3(arr, i, counter - 1 - i);
+        swap3(arr, i, counter - i + 1);
     }
 }
 
 void printHeap3(char arr[][3][101], int counter)
 {
-    for (int i = 0; i < counter; i++)
+    for (int i = 1; i < counter; i++)
     {
         printf("%s#%s\n", arr[i][0], arr[i][2]);
     }
@@ -152,7 +152,7 @@ void printHeap3(char arr[][3][101], int counter)
 
 void deleteMinHeap3(char arr[][3][101], int *counter, int i)
 {
-    if (*counter <= 0 || i >= *counter)
+    if (*counter < 0 || i >= *counter)
     {
         return;
     }
@@ -189,7 +189,7 @@ void addCinemaLocationFromExistingProvince(char provinceAndCode[100][2][101], ch
     char newLocation[51];
     int newNum, counter;
 
-    newNum = counter = 0;
+    newNum = counter = 1;
 
     FILE *cinProvFile = fopen("cinema_province.txt", "r");
     FILE *cinLocFile = fopen("cinema_location.txt", "a+");
@@ -236,29 +236,31 @@ void deleteCinemaLocation(int *counterLoc, char provinceAndCode[100][2][101], ch
     scanf("%s", provinceCode);
     printf("\n");
 
-    counter = 0;
+    counter = 1;
 
-    for (int i = 0; i < *counterLoc; i++)
+    for (int i = 1; i < *counterLoc; i++)
     {
         if (strcmp(locationAndCodeAndNum[i][1], provinceCode) == 0)
         {
-            for (int j = 0; j < 3; j++)
+            for (int j = 1; j < 4; j++)
             {
                 strcpy(filteredCinema[counter][j], locationAndCodeAndNum[i][j]);
             }
-
             counter++;
         }
     }
 
     heapSort3(filteredCinema, counter);
-    printHeap3(filteredCinema, counter);
+    for (int i = 1; i < counter; i++)
+    {
+        printf("%s#%s#%s\n", filteredCinema[i][0], filteredCinema[i][1], filteredCinema[i][2]);
+    }
 
     printf("Choose Unwanted Cinema: ");
-    scanf("%s", &cinemaNum);
+    scanf("%s", cinemaNum);
     printf("\n");
 
-    counter = 0;
+    counter = 1;
     while (strcmp(locationAndCodeAndNum[counter][1], provinceCode) != 0 || strcmp(locationAndCodeAndNum[counter][2], cinemaNum) != 0)
     {
         counter++;
@@ -266,11 +268,9 @@ void deleteCinemaLocation(int *counterLoc, char provinceAndCode[100][2][101], ch
 
     deleteMinHeap3(locationAndCodeAndNum, counterLoc, counter);
 
-    counter = 0;
-    for (int i = 0; i < *counterLoc; i++)
+    for (int i = 1; i < *counterLoc; i++)
     {
-        fprintf(cinLocFile, "%s#%s#%s\n", locationAndCodeAndNum[counter][0], locationAndCodeAndNum[counter][1], locationAndCodeAndNum[counter][2]);
-        counter++;
+        fprintf(cinLocFile, "%s#%s#%s\n", locationAndCodeAndNum[i][0], locationAndCodeAndNum[i][1], locationAndCodeAndNum[i][2]);
     }
 
     fclose(cinProvFile);
@@ -286,11 +286,11 @@ void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char pro
     FILE *cinProvFile = fopen("cinema_province.txt", "w");
     FILE *cinLocFile = fopen("cinema_location.txt", "w");
 
-    counter = 0;
+    counter = 1;
 
-    for (int i = 0; i < *counterProv; i++)
+    for (int i = 1; i < *counterProv; i++)
     {
-        for (int j = 0; j < 2; j++)
+        for (int j = 1; j < 2; j++)
         {
             strcpy(provinceDisplay[counter][j], provinceAndCode[i][j]);
         }
@@ -306,7 +306,7 @@ void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char pro
     scanf("%s", provinceCode);
     printf("\n");
 
-    counter = 0;
+    counter = 1;
     while (strcmp(provinceAndCode[counter][1], provinceCode) != 0)
     {
         counter++;
@@ -314,15 +314,15 @@ void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char pro
 
     deleteMinHeap2(provinceAndCode, counterProv, counter);
 
-    for (int i = 0; i < *counterProv; i++)
+    for (int i = 1; i < *counterProv; i++)
     {
         fprintf(cinProvFile, "%s#%s\n", provinceAndCode[i][0], provinceAndCode[i][1]);
     }
 
     fclose(cinProvFile);
 
-    counter = 0;
-    counterCode = 0;
+    counter = 1;
+    counterCode = 1;
     while (1)
     {
         if (strcmp(locationAndCodeAndNum[counter][1], provinceCode) == 0)
@@ -336,9 +336,9 @@ void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char pro
         }
     }
 
-    for (int i = 0; i < counterCode; i++)
+    for (int i = 1; i < counterCode; i++)
     {
-        counter = 0;
+        counter = 1;
         while (strcmp(locationAndCodeAndNum[counter][1], provinceCode) != 0)
         {
             counter++;
@@ -347,7 +347,7 @@ void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char pro
         deleteMinHeap3(locationAndCodeAndNum, counterLoc, counter);
     }
 
-    for (int i = 0; i < *counterLoc; i++)
+    for (int i = 1; i < *counterLoc; i++)
     {
         fprintf(cinLocFile, "%s#%s#%s\n", locationAndCodeAndNum[i][0], locationAndCodeAndNum[i][1], locationAndCodeAndNum[i][2]);
     }
@@ -378,20 +378,21 @@ void owner()
 
     while (1)
     {
-        counterProv = counterLoc = 0;
+        counterProv = counterLoc = 1;
 
         FILE *cinProvFile = fopen("cinema_province.txt", "r");
         FILE *cinLocFile = fopen("cinema_location.txt", "r");
 
-        while (!feof(cinProvFile))
+        while (fscanf(cinProvFile, " %[^#]#%[^\n]\n", provinceAndCode[counterProv][0], provinceAndCode[counterProv][1]) == 2)
         {
-            fscanf(cinProvFile, " %[^#]#%[^\n]\n", provinceAndCode[counterProv][0], provinceAndCode[counterProv][1]);
             counterProv++;
         }
 
-        while (!feof(cinLocFile))
+        while (fscanf(cinLocFile, " %[^#]#%[^#]#%[^\n]\n",
+                      locationAndCodeAndNum[counterLoc][0],
+                      locationAndCodeAndNum[counterLoc][1],
+                      locationAndCodeAndNum[counterLoc][2]) == 3)
         {
-            fscanf(cinLocFile, " %[^#]#%[^#]#%[^\n]\n", locationAndCodeAndNum[counterLoc][0], locationAndCodeAndNum[counterLoc][1], locationAndCodeAndNum[counterLoc][2]);
             counterLoc++;
         }
 
@@ -446,20 +447,21 @@ void chooseCinema()
     char provinceAndCode[100][2][101];
     char locationAndCodeAndNum[100][3][101];
 
-    counterLoc = counterProv = 0;
+    counterLoc = counterProv = 1;
 
     FILE *cinProvFile = fopen("cinema_province.txt", "r");
     FILE *cinLocFile = fopen("cinema_location.txt", "r");
 
-    while (!feof(cinProvFile))
+    while (fscanf(cinProvFile, "%[^#]#%[^\n]\n", provinceAndCode[counterProv][0], provinceAndCode[counterProv][1]) == 2)
     {
-        fscanf(cinProvFile, " %[^#]#%[^\n]\n", provinceAndCode[counterProv][0], provinceAndCode[counterProv][1]);
         counterProv++;
     }
 
-    while (!feof(cinLocFile))
+    while (fscanf(cinLocFile, "%[^#]#%[^#]#%[^\n]\n",
+                  locationAndCodeAndNum[counterLoc][0],
+                  locationAndCodeAndNum[counterLoc][1],
+                  locationAndCodeAndNum[counterLoc][2]) == 3)
     {
-        fscanf(cinLocFile, " %[^#]#%[^#]#%[^\n]\n", locationAndCodeAndNum[counterLoc][0], locationAndCodeAndNum[counterLoc][1], locationAndCodeAndNum[counterLoc][2]);
         counterLoc++;
     }
 
@@ -473,9 +475,9 @@ void chooseCinema()
     scanf(" [^/n]", userProv);
     printf("\n");
 
-    counter = 0;
+    counter = 1;
 
-    for (int i = 0; i < counterLoc; i++)
+    for (int i = 1; i < counterLoc; i++)
     {
         if (strcmp(locationAndCodeAndNum[i][0], userProv) == 0)
         {
