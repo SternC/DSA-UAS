@@ -1,3 +1,15 @@
 popcorn#10#10000
 cake#15#20000
 fries#10#30000
+chickenwing#10#13000
+sausage#10#25000
+candy#10#10000
+nachos#10#35000
+takoyaki#10#37000
+bread#10#28000
+croffle#10#32000
+kebab#10#23000
+donut#10#18000
+pizza#10#42000
+churros#10#22000
+toast#10#21000
