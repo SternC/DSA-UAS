@@ -1010,17 +1010,17 @@ void selectionSort(struct food snack[])
 
     for (int i = 0; i < n - 1; i++)
     {
-        int min = i;
+        int temp = i;
         for (int j = i + 1; j < n; j++)
         {
-            if (strcmp(snack[j].name, snack[min].name) < 0)
+            if (strcmp(snack[j].name, snack[temp].name) < 0)
             {
-                min = j;
+                temp = j;
             }
         }
-        if (min != i)
+        if (temp != i)
         {
-            swap(&snack[i], &snack[min]);
+            swap(&snack[i], &snack[temp]);
         }
     }
 
