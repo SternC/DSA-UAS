@@ -196,7 +196,10 @@ void addMovie(Movie **root)
 void searchMovieByDate(Movie *root, int day, int month)
 {
     if (root == NULL)
+    {
+        printf("Movie not found!\n");
         return;
+    }
 
     if (month < root->month || (month == root->month && day < root->day))
     {
@@ -1248,6 +1251,9 @@ int main()
             }
             else if (option == 2)
             {
+                printf("\n---------------------------------------------------------------------------------------------------------------------------------\n");
+                printf(" Date-Month |                  Movie Name                   |        Genre       |        Director      |  Duration  |Age Rating|\n");
+                printf("---------------------------------------------------------------------------------------------------------------------------------\n");
                 viewMovies(root);
                 printf("\n");
                 printf("Please enter the date (e.g any valid number from 1-31) of the movie release date:  ");
