@@ -720,13 +720,13 @@ int binarySearchProvince(char target[], char provinceAndCode[][2][101], int n)
         int mid = (left + right) / 2;
         int cmp = strcmp(target, provinceAndCode[mid][0]);
         if (cmp == 0)
-            return mid; // found
+            return mid;
         else if (cmp < 0)
             right = mid - 1;
         else
             left = mid + 1;
     }
-    return -1; // not found
+    return -1;
 }
 
 int binarySearchCinema(char target[], char locationAndCodeAndNum[][3][101], int n)
@@ -737,13 +737,13 @@ int binarySearchCinema(char target[], char locationAndCodeAndNum[][3][101], int 
         int mid = (left + right) / 2;
         int cmp = strcmp(target, locationAndCodeAndNum[mid][0]);
         if (cmp == 0)
-            return mid; // found
+            return mid;
         else if (cmp < 0)
             right = mid - 1;
         else
             left = mid + 1;
     }
-    return -1; // not found
+    return -1;
 }
 
 void cinemaOwner()
