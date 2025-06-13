@@ -407,13 +407,13 @@ void printHeap2(char arr[][2][101], int counter)
 
 void deleteMinHeap2(char arr[][2][101], int *counter, int i)
 {
-    if (*counter < 1 || i > *counter)
-    {
-        return;
-    }
     swap2(arr, i, *counter);
     (*counter)--;
     minHeapify2(arr, *counter, i);
+
+    arr[*counter + 1][0][0] = '\0';
+    arr[*counter + 1][1][0] = '\0';
+    return;
 }
 
 void swap3(char arr[][3][101], int i, int j)
@@ -485,13 +485,14 @@ void printHeap3(char arr[][3][101], int counter)
 
 void deleteMinHeap3(char arr[][3][101], int *counter, int i)
 {
-    if (*counter < 1 || i > *counter)
-    {
-        return;
-    }
     swap3(arr, i, *counter);
     (*counter)--;
     minHeapify3(arr, *counter, i);
+
+    arr[*counter + 1][0][0] = '\0';
+    arr[*counter + 1][1][0] = '\0';
+    arr[*counter + 1][2][0] = '\0';
+    return;
 }
 
 void printHeap4(char arr[][3][101], int counter, char selectedProvinceCode[])
@@ -601,16 +602,16 @@ void deleteCinemaLocation(int *counterLoc, char provinceAndCode[100][2][101], ch
     scanf("%s", &cinemaNum);
     printf("\n");
 
-    counter = 1;
-    while (strcmp(locationAndCodeAndNum[counter][1], provinceCode) != 0 || strcmp(locationAndCodeAndNum[counter][2], cinemaNum) != 0)
+    for (int i = 1; i < *counterLoc; i++)
     {
-        counter++;
+        if (strcmp(locationAndCodeAndNum[i][1], provinceCode) == 0 && strcmp(locationAndCodeAndNum[i][2], cinemaNum) == 0)
+        {
+            deleteMinHeap3(locationAndCodeAndNum, counterLoc, i);
+            break;
+        }
     }
 
-    deleteMinHeap3(locationAndCodeAndNum, counterLoc, counter);
-
     counter = 1;
-    (*counterLoc)++;
     for (int i = 1; i < *counterLoc; i++)
     {
         fprintf(cinLocFile, "%s#%s#%s\n", locationAndCodeAndNum[counter][0], locationAndCodeAndNum[counter][1], locationAndCodeAndNum[counter][2]);
@@ -625,7 +626,7 @@ void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char pro
 {
     char provinceCode[101];
     char provinceDisplay[100][2][101];
-    int counter, counterCode;
+    int counter;
 
     FILE *cinProvFile = fopen("cinema_province.txt", "w");
     FILE *cinLocFile = fopen("cinema_location.txt", "w");
@@ -650,13 +651,14 @@ void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char pro
     scanf("%s", provinceCode);
     printf("\n");
 
-    counter = 1;
-    while (strcmp(provinceAndCode[counter][1], provinceCode) != 0)
+    for (int i = 1; i < *counterProv; i++)
     {
-        counter++;
+        if (strcmp(provinceAndCode[i][1], provinceCode) == 0)
+        {
+            deleteMinHeap2(provinceAndCode, counterProv, i);
+            break;
+        }
     }
-
-    deleteMinHeap2(provinceAndCode, counterProv, counter - 1);
 
     for (int i = 1; i < *counterProv; i++)
     {
@@ -665,30 +667,12 @@ void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char pro
 
     fclose(cinProvFile);
 
-    counter = 1;
-    counterCode = 0;
-    while (1)
+    for (int i = 1; i < *counterLoc; i++)
     {
-        if (strcmp(locationAndCodeAndNum[counter][1], provinceCode) == 0)
+        if (strcmp(locationAndCodeAndNum[i][1], provinceCode) == 0)
         {
-            counterCode++;
+            deleteMinHeap3(locationAndCodeAndNum, counterLoc, i);
         }
-        counter++;
-        if (strcmp(locationAndCodeAndNum[counter][1], "") == 0)
-        {
-            break;
-        }
-    }
-
-    for (int i = 1; i < counterCode; i++)
-    {
-        counter = 1;
-        while (strcmp(locationAndCodeAndNum[counter][1], provinceCode) != 0)
-        {
-            counter++;
-        }
-
-        deleteMinHeap3(locationAndCodeAndNum, counterLoc, counter);
     }
 
     for (int i = 1; i < *counterLoc; i++)
@@ -697,19 +681,6 @@ void deleteCinemaProvinceAndLocation(int *counterLoc, int *counterProv, char pro
     }
 
     fclose(cinLocFile);
-}
-
-void deleteAllLocationAndProvince(int *counterProv, int *counterLoc, char provinceAndCode[][2][101], char locationAndCodeAndNum[][3][101])
-{
-    while (*counterProv > 0)
-    {
-        deleteMinHeap2(provinceAndCode, counterProv, 0);
-    }
-
-    while (*counterLoc > 0)
-    {
-        deleteMinHeap3(locationAndCodeAndNum, counterLoc, 0);
-    }
 }
 
 int binarySearchProvince(char target[], char provinceAndCode[][2][101], int n)
@@ -814,10 +785,9 @@ void cinemaOwner()
             break;
 
         default:
-            deleteAllLocationAndProvince(&counterProv, &counterLoc, provinceAndCode, locationAndCodeAndNum);
+
             return;
         }
-        deleteAllLocationAndProvince(&counterProv, &counterLoc, provinceAndCode, locationAndCodeAndNum);
     }
 }
 
